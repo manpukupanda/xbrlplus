@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11018.127
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xbrlplus", "xbrlplus\xbrlplus.csproj", "{3CC434E9-246F-4411-9F84-737C32F7023E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{585EC745-5264-49FE-B03A-1B360D13827B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{585EC745-5264-49FE-B03A-1B360D13827B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{585EC745-5264-49FE-B03A-1B360D13827B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{585EC745-5264-49FE-B03A-1B360D13827B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CC434E9-246F-4411-9F84-737C32F7023E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CC434E9-246F-4411-9F84-737C32F7023E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CC434E9-246F-4411-9F84-737C32F7023E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CC434E9-246F-4411-9F84-737C32F7023E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {588AAB7F-7A40-46EE-AFA4-CF692B133BFD}
+	EndGlobalSection
+EndGlobal

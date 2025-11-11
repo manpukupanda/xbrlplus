@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "xbrlplus": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\kato\\Dev\\trial\\himalia\\data\\ufo\\jpcrp030000-asr-001_E02011-000_2025-04-30_01_2025-07-28.xbrl\""
+    }
+  }
+}

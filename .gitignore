@@ -1,0 +1,60 @@
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio specific
+.vs/
+.vscode/
+*.dbmdl
+*.pdb
+*.cache
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.nuspec
+
+## Others
+*.class
+*.psess
+*.vsp
+*.pidb
+*.svclog
+TestResult.xml
+*.coverage
+*.coveragexml
+*.orig
+
+## OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## Rider / JetBrains
+.idea/
+*.sln.iml
+
+TestResults/
