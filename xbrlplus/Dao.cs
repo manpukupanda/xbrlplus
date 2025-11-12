@@ -183,11 +183,46 @@ internal static class Dao
                lt.Seq,
                lt.ArcOrder,
                lt.PreferredLabel,
+               lt.ConceptId,
                cpt.LocalName
         FROM TLinkNodes lt
         JOIN TRoleTypes rt ON lt.RoleTypeId = rt.Id
         JOIN TConcepts cpt ON lt.ConceptId = cpt.Id
         WHERE lt.LinkType = 'PresentationLink';
+
+        CREATE VIEW VDefinitionLinkNodes AS
+        SELECT lt.Id LinkNodeId,
+               lt.ParentId,
+               rt.RoleURI,
+               rt.Definition,
+               rt.DefinitionEn,
+               lt.Depth,
+               lt.Seq,
+               lt.ArcOrder,
+               lt.Arcrole,
+               lt.ConceptId,
+               cpt.LocalName
+        FROM TLinkNodes lt
+        JOIN TRoleTypes rt ON lt.RoleTypeId = rt.Id
+        JOIN TConcepts cpt ON lt.ConceptId = cpt.Id
+        WHERE lt.LinkType = 'DefinitionLink';
+
+        CREATE VIEW VCalclationLinkNodes AS
+        SELECT lt.Id LinkNodeId,
+               lt.ParentId,
+               rt.RoleURI,
+               rt.Definition,
+               rt.DefinitionEn,
+               lt.Depth,
+               lt.Seq,
+               lt.ArcOrder,
+               lt.Weight,
+               lt.ConceptId,
+               cpt.LocalName
+        FROM TLinkNodes lt
+        JOIN TRoleTypes rt ON lt.RoleTypeId = rt.Id
+        JOIN TConcepts cpt ON lt.ConceptId = cpt.Id
+        WHERE lt.LinkType = 'CalclationLink';
         ";
         command.ExecuteNonQuery();
     }
