@@ -58,3 +58,6 @@ $RECYCLE.BIN/
 *.sln.iml
 
 TestResults/
+
+# Visual Studio launch settings
+launchSettings.json
