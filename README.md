@@ -9,6 +9,26 @@ Interactive REPL tool for parsing EDINET XBRL schemas and instances into queryab
 - Stores parsed data in in-memory SQLite
 - Interactive REPL with `.format`, `.output`, `.exit` commands
 
+## Installation
+
+To install `xbrlplus` as a global .NET CLI tool, run the following command:
+
+```bash
+dotnet tool install --global xbrlplus
+```
+
+To update to the latest version:
+```bash
+dotnet tool update --global xbrlplus
+```
+
+To uninstall:
+```bash
+dotnet tool uninstall --global xbrlplus
+```
+
+🧭 Note: Make sure you have the .NET SDK installed and available in your PATH.
+
 ## Usage
 
 ```bash
@@ -28,7 +48,7 @@ xbrlplus.exe <schema_or_instance_file>
 |--------|---------|---------------------------------|
 | Id     | INTEGER | 主キー。文書の一意識別子       |
 | Kind   | TEXT    | 文書種別（TaxonomySchema / Instance / Linkbase）  |
-| Uri    | TEXT    | 取得元URI（EDINETなど）         |
+| Uri    | TEXT    | 取得元URI         |
 
 ---
 
