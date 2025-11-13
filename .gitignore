@@ -61,3 +61,7 @@ TestResults/
 
 # Visual Studio launch settings
 launchSettings.json
+
+# NuGet packaging: README.md is copied into project folder during build
+# This file is not part of source control and should be excluded
+xbrlplus/README.md
