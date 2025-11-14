@@ -151,6 +151,7 @@ SELECT EXTRACT_URI_TAIL(Uri) AS FileName from TDocuments;
 | Abstract       | TEXT    | 抽象概念かどうか（`true` / `false`）             |
 | PeriodType     | TEXT    | 期間型（`duration` / `instant`）                 |
 | Nillable       | TEXT    | null許容かどうか（`true` / `false`）             |
+
 ---
 
 ### TContexts（報告期間・時点）
