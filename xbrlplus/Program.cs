@@ -57,7 +57,9 @@ var dts = await parser.ParseAsync(entryPointUri, XbrlParser.DefaultLoaderFunc);
 using var connection = new SqliteConnection("Data Source=:memory:");
 connection.Open();
 using var transaction = connection.BeginTransaction();
-connection.CreateFunction<string, string, bool?, bool>("MATCHES_REGEX", SqliteFunctions.MatchesRegex);
+
+connection.CreateFunction<string, string, bool>("MATCHES_REGEX", (input, pattern) => SqliteFunctions.MatchesRegex(input, pattern, true));
+connection.CreateFunction<string, string, bool, bool>("MATCHES_REGEX", SqliteFunctions.MatchesRegex);
 connection.CreateFunction<string, string>("CLEAN_HTML_TEXT", SqliteFunctions.CleanHtmlText);
 connection.CreateFunction<string, string>("EXTRACT_URI_TAIL", SqliteFunctions.ExtractUriTail);
 

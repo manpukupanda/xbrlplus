@@ -696,7 +696,7 @@ internal static class Dao
 
 	public static class SqliteFunctions
 	{
-		public static bool MatchesRegex(string input, string pattern, bool? caseSensitive = true)
+		public static bool MatchesRegex(string input, string pattern, bool caseSensitive)
 		{
 			if (input == null || pattern == null)
 				return false;

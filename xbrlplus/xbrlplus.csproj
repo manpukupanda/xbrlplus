@@ -10,7 +10,7 @@
     <ToolCommandName>xbrlplus</ToolCommandName>
     <!-- dotnet xbrlplus で呼び出す -->
     <PackageId>xbrlplus</PackageId>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <Authors>manpukupanda</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
