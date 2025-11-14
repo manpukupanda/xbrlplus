@@ -40,6 +40,67 @@ xbrlplus.exe <schema_or_instance_file>
 - `.output <filename>` — Redirect output to file
 - `.exit` / `.quit` / `.q` — Exit REPL
 
+## Custom SQLite Functions
+
+This project includes custom SQLite functions to support flexible querying, text normalization, and other domain-specific operations. These functions are designed to be composable and safe for mixed-format data, and may evolve as the project grows.
+
+### `MATCHES_REGEX(text, pattern)`
+Returns `true` if the input string matches the given regular expression pattern.
+
+- **Arguments**:
+  - `text`: The input string to test.
+  - `pattern`: A regular expression pattern (ECMAScript-compatible).
+  - `caseSensitive` *(optional)*: A boolean flag indicating whether the match should be case-sensitive. Defaults to `true`.
+- **Returns**: `true` or `false`
+- **Behavior**:
+  - Returns `false` if either argument is `NULL`.
+  - Throws an error if the pattern is syntactically invalid.
+  - Case sensitivity is controlled by an optional third argument (`true` by default).
+
+**Example**:
+```sql
+SELECT * FROM TConcepts WHERE MATCHES_REGEX(LocalName, '^Cash.*');
+```
+
+### `CLEAN_HTML_TEXT(html_or_text)`
+
+Extracts meaningful plain text from an HTML (or XHTML) snippet, normalizing whitespace and preserving semantic spacing.
+
+- **Arguments**:
+  - `html_or_text`: A string containing either raw text or HTML markup.
+- **Returns**: A whitespace-normalized plain text string.
+- **Behavior**:
+  - Removes all HTML tags.
+  - Replaces `<br>` tags with a single space.
+  - Appends a space after block-level tags (e.g., `div`, `p`, `section`, `article`).
+  - Converts `&nbsp;`, tabs, newlines, and multiple ASCII spaces into a single ASCII space.
+  - Preserves full-width (U+3000) spaces.
+  - Trims leading and trailing whitespace.
+  - Applies normalization even if the input contains no HTML.
+
+**Example**:
+```sql
+SELECT CLEAN_HTML_TEXT(Value) AS CleanedText FROM VFacts;
+```
+
+#### `EXTRACT_URI_TAIL(uri)`
+
+Extracts the final segment from a URI-like string, assuming segments are separated by `/`.
+
+- **Arguments**:
+  - `uri`: A string representing a URI or path.
+- **Returns**: The last non-empty segment of the URI.
+- **Behavior**:
+  - Trims trailing slashes before splitting.
+  - Returns an empty string if input is `NULL`, empty, or malformed.
+  - Designed to be fault-tolerant and safe for irregular input.
+
+**Example**:
+
+```sql
+SELECT EXTRACT_URI_TAIL(Uri) AS FileName from TDocuments;
+```
+
 ## Table Layout
 
 ### TDocuments（文書マスタ）
@@ -47,7 +108,7 @@ xbrlplus.exe <schema_or_instance_file>
 | Column | Type    | Description                     |
 |--------|---------|---------------------------------|
 | Id     | INTEGER | 主キー。文書の一意識別子       |
-| Kind   | TEXT    | 文書種別（TaxonomySchema / Instance / Linkbase）  |
+| Kind   | TEXT    | 文書種別（`TaxonomySchema` / `Instance` / `Linkbase`）  |
 | Uri    | TEXT    | 取得元URI         |
 
 ---
@@ -82,13 +143,14 @@ xbrlplus.exe <schema_or_instance_file>
 |----------------|---------|--------------------------------------------------|
 | Id             | INTEGER | 主キー。概念の一意識別子                        |
 | Uri            | TEXT    | 概念のURI（XBRL定義）                            |
-| NamespaceName  | TEXT    | 名前空間URI              |
+| NamespaceName  | TEXT    | 名前空間URI                                      |
 | LocalName      | TEXT    | ローカル名（タグ名）                             |
-| Balance        | TEXT    | 借方/貸方（debit / credit）                      |
-| Abstract       | TEXT    | 抽象概念かどうか（true / false）                 |
-| PeriodType     | TEXT    | 期間型（duration / instant）                     |
-| Nillable       | TEXT    | null許容かどうか（true / false）                 |
-
+| TypeNS         | TEXT    | データ型の名前空間URI（例: `http://www.xbrl.org/...`） |
+| TypeName       | TEXT    | データ型のローカル名（例: `stringItemType`, `monetaryItemType` など） |
+| Balance        | TEXT    | 借方/貸方（`Debit` / `Credit` / `Undefined`）                  |
+| Abstract       | TEXT    | 抽象概念かどうか（`true` / `false`）             |
+| PeriodType     | TEXT    | 期間型（`duration` / `instant`）                 |
+| Nillable       | TEXT    | null許容かどうか（`true` / `false`）             |
 ---
 
 ### TContexts（報告期間・時点）

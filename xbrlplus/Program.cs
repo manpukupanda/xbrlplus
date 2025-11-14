@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using System.Data;
 using System.Text;
 using xbrlplus;
+using static xbrlplus.Dao;
 
 if (args.Length == 0)
 {
@@ -56,6 +57,10 @@ var dts = await parser.ParseAsync(entryPointUri, XbrlParser.DefaultLoaderFunc);
 using var connection = new SqliteConnection("Data Source=:memory:");
 connection.Open();
 using var transaction = connection.BeginTransaction();
+connection.CreateFunction<string, string, bool?, bool>("MATCHES_REGEX", SqliteFunctions.MatchesRegex);
+connection.CreateFunction<string, string>("CLEAN_HTML_TEXT", SqliteFunctions.CleanHtmlText);
+connection.CreateFunction<string, string>("EXTRACT_URI_TAIL", SqliteFunctions.ExtractUriTail);
+
 Dao.CreateTable(connection);
 Dao.SaveAll(connection, dts);
 transaction.Commit();
