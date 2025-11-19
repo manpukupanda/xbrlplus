@@ -83,7 +83,7 @@ Extracts meaningful plain text from an HTML (or XHTML) snippet, normalizing whit
 SELECT CLEAN_HTML_TEXT(Value) AS CleanedText FROM VFacts;
 ```
 
-#### `EXTRACT_URI_TAIL(uri)`
+### `EXTRACT_URI_TAIL(uri)`
 
 Extracts the final segment from a URI-like string, assuming segments are separated by `/`.
 

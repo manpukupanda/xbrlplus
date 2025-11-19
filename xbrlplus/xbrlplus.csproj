@@ -10,11 +10,16 @@
     <ToolCommandName>xbrlplus</ToolCommandName>
     <!-- dotnet xbrlplus で呼び出す -->
     <PackageId>xbrlplus</PackageId>
-    <Version>0.0.4</Version>
+    <Version>0.0.5</Version>
     <Authors>manpukupanda</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>xbrl;EDINET</PackageTags>
 
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
