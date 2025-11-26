@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using System.Data;
 using System.Text;
 using xbrlplus;
+using xbrlplus.Services;
 using static xbrlplus.Dao;
 
 if (args.Length == 0)
@@ -44,14 +45,18 @@ using IHost host = Host.CreateDefaultBuilder(args)
 	.ConfigureServices((_, services) =>
 	{
 		services.AddTransient<IXbrlParser, XbrlParser>(); // Register XBRL parser
+		services.AddTransient<IXmlLoaderService, XmlLoaderService>(); // Register XML loader service
 	})
 	.Build();
 
 // Get XBRL parser
 var parser = host.Services.GetRequiredService<IXbrlParser>();
 
+// Get xmlloader service
+var xmlLoader = host.Services.GetRequiredService<IXmlLoaderService>();
+
 // Parse XBRL document and get DTS information
-var dts = await parser.ParseAsync(entryPointUri, XbrlParser.DefaultLoaderFunc);
+var dts = await parser.ParseAsync(entryPointUri, xmlLoader.LoadAsync);
 
 // Create in-memory SQLite database and store data
 using var connection = new SqliteConnection("Data Source=:memory:");
