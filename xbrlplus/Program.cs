@@ -1,4 +1,4 @@
-﻿using Manpuku.Edinet.Xbrl;
+﻿using Manpuku.Edinet.Manifest;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,15 +10,18 @@ using static xbrlplus.Dao;
 
 if (args.Length == 0)
 {
-	Console.WriteLine("Usage: xbrlplus.exe <schema or instance file path>");
+	Console.WriteLine("Usage: xbrlplus.exe <schema|instance|manifest file path>");
 	Environment.Exit(1);
 }
 
 if (args[0] is "-h" or "--help" or "/?")
 {
 	Console.WriteLine("xbrlplus - XBRL to SQLite REPL");
-	Console.WriteLine("Usage: xbrlplus.exe <schema or instance file path>");
-	Console.WriteLine("Example: xbrlplus.exe sample.xbrl");
+	Console.WriteLine("Usage: xbrlplus.exe <schema|instance|manifest file path>");
+	Console.WriteLine("Examples:");
+	Console.WriteLine("  xbrlplus.exe jpcrp030000-asr-001_E02011-000_2025-04-30_01_2025-07-28.xsd");
+	Console.WriteLine("  xbrlplus.exe jpcrp030000-asr-001_E02011-000_2025-04-30_01_2025-07-28.xbrl");
+	Console.WriteLine("  xbrlplus.exe manifest_PublicDoc.xml");
 	Environment.Exit(0);
 }
 
@@ -29,11 +32,11 @@ if (args[0] is "--version" or "-v")
 	Environment.Exit(0);
 }
 
-// Input path (schema or instance)
+// Input path (schema, instance or manifest)
 var path = args[0];
-if (!path.EndsWith(".xsd") && !path.EndsWith(".xbrl"))
+if (!path.EndsWith(".xsd") && !path.EndsWith(".xbrl") && !path.EndsWith(".xml"))
 {
-	Console.WriteLine("Error: Please provide a valid input file — either a schema (.xsd) or XBRL (.xbrl) file.");
+	Console.WriteLine("Error: Please provide a valid input file — either a schema (.xsd), XBRL (.xbrl) or manifest (.xml) file.");
 	Environment.Exit(1);
 }
 
@@ -44,19 +47,75 @@ var entryPointUri = new Uri(Path.GetFullPath(path));
 using IHost host = Host.CreateDefaultBuilder(args)
 	.ConfigureServices((_, services) =>
 	{
-		services.AddTransient<IXbrlParser, XbrlParser>(); // Register XBRL parser
+		services.AddTransient<Manpuku.Edinet.Xbrl.IXbrlParser, Manpuku.Edinet.Xbrl.XbrlParser>(); // Register XBRL parser
+		services.AddTransient<Manpuku.Edinet.Xbrl.InlineXBRL.IXbrlParser, Manpuku.Edinet.Xbrl.InlineXBRL.XbrlParser>(); // Register XBRL parser
 		services.AddTransient<IXmlLoaderService, XmlLoaderService>(); // Register XML loader service
 	})
 	.Build();
 
-// Get XBRL parser
-var parser = host.Services.GetRequiredService<IXbrlParser>();
-
 // Get xmlloader service
 var xmlLoader = host.Services.GetRequiredService<IXmlLoaderService>();
 
-// Parse XBRL document and get DTS information
-var dts = await parser.ParseAsync(entryPointUri, xmlLoader.LoadAsync);
+Manpuku.Edinet.Xbrl.DiscoverableTaxonomySet dts = null!;
+
+if (path.EndsWith(".xsd") || path.EndsWith(".xbrl"))
+{
+	// Get XBRL parser
+	var parser = host.Services.GetRequiredService<Manpuku.Edinet.Xbrl.IXbrlParser>();
+	// Parse XBRL document and get DTS information
+	dts = await parser.ParseAsync(entryPointUri, xmlLoader.LoadAsync);
+}
+else
+{
+	// Load manifest file
+	var manifestDoc = await xmlLoader.LoadAsync(entryPointUri);
+	var manifest = new Manifest(manifestDoc);
+	if (manifest.List.Length == 0)
+	{
+		Console.WriteLine("Error: No entries found in the manifest file.");
+		Environment.Exit(1);
+	}
+
+	// Select instance
+	Instance instance = manifest.List[0];
+	if (manifest.List.Length > 1)
+	{
+		Console.WriteLine("Multiple entries found in the manifest. Select an entry by typing its number and pressing Enter.");
+		foreach (var item in manifest.List.Select((value, index) => new { value, index }))
+		{
+			Console.WriteLine($"{item.index + 1}. {item.value.Id}");
+		}
+		Console.WriteLine("q. Cancel and exit");
+
+		while (true)
+		{
+			var line = Console.ReadLine();
+			if (line?.ToLower() == "q")
+			{
+				Console.WriteLine("Selection cancelled.");
+				Environment.Exit(1);
+			}
+			if (int.TryParse(line, out int selectedNumber))
+			{
+				int selectedIndex = selectedNumber - 1; // Convert to zero-based index
+				if (selectedIndex >= 0 && selectedIndex < manifest.List.Length)
+				{
+					instance = manifest.List[selectedIndex];
+					break;
+				}
+			}
+			Console.WriteLine("Invalid selection. Please enter a valid number or 'q' to quit.");
+		}
+	}
+
+	// Get Inline XBRL parser
+	var parser = host.Services.GetRequiredService<Manpuku.Edinet.Xbrl.InlineXBRL.IXbrlParser>();
+	// Get Inline XBRL document URIs
+	var inlineXbrlUris = instance.InlineXBRLFiles.Select(f => new Uri(entryPointUri, f)).ToArray();
+	// Parse XBRL document and get DTS information
+	dts = await parser.ParseInlineAsync(inlineXbrlUris, xmlLoader.LoadAsync);
+}
+
 
 // Create in-memory SQLite database and store data
 using var connection = new SqliteConnection("Data Source=:memory:");

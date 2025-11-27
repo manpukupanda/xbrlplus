@@ -1,11 +1,11 @@
 ﻿# xbrlplus
 
-EDINETのXBRL文書（スキーマ・インスタンス）を解析し、SQLiteデータベースとして対話的に操作できるREPLツールです。  
-Interactive REPL tool for parsing EDINET XBRL schemas and instances into queryable SQLite format.
+EDINETのXBRL文書（スキーマ・インスタンス・マニフェスト）を解析し、SQLiteデータベースとして対話的に操作できるREPLツールです。  
+Interactive REPL tool for parsing EDINET XBRL schemas, instances, and manifest files into queryable SQLite format.
 
 ## Features
 
-- Parses `.xsd` and `.xbrl` files
+- Parses `.xsd`, `.xbrl`, and manifest files
 - Stores parsed data in in-memory SQLite
 - Interactive REPL with `.format`, `.output`, `.exit` commands
 
@@ -32,8 +32,11 @@ dotnet tool uninstall --global xbrlplus
 ## Usage
 
 ```bash
-xbrlplus.exe <schema_or_instance_file>
+xbrlplus.exe <schema_or_instance_or_manifest_file>
 ```
+- Accepts .xsd (schema), .xbrl (instance), or manifest files as input
+- Parsed data is loaded into an in-memory SQLite database
+- Use the interactive REPL to query and manage the data
 
 ## REPL Commands
 - `.format [table|csv|json]` — Set output format
